@@ -1,4 +1,5 @@
 import 'package:film_nathalia/models/movie.dart';
+import 'package:film_nathalia/screens/detail_screen.dart';
 import 'package:film_nathalia/services/api_services.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,13 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Movie> _allMovies = [];
   List<Movie> _trendingMovies = [];
   List<Movie> _popularMovies = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadMovies();
+  }
 
   Future<void> _loadMovies() async {
     final List<Map<String, dynamic>> allMoviesData = await _apiService
@@ -34,20 +42,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _loadMovies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Film')),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_buildMoviesList('All Movies', _allMovies)],
+          children: [
+            _buildMoviesList('All Movies', _allMovies),
+            _buildMoviesList('Trending Movies', _trendingMovies),
+            _buildMoviesList('Popular Movies', _popularMovies),
+          ],
         ),
       ),
     );
@@ -62,6 +67,47 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Text(
             title,
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(
+          height: 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: movies.length,
+            itemBuilder: (BuildContext context, int index) {
+              final Movie movie = movies[index];
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    // Handle movie tap, e.g., navigate to details page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailScreen(movie: movie),
+                      ),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Image.network(
+                        'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                        height: 150,
+                        width: 100,
+                        fit: BoxFit.cover,
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        movie.title.length > 14
+                            ? '${movie.title.substring(0, 10)}...'
+                            : movie.title,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ],
