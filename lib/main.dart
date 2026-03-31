@@ -1,3 +1,4 @@
+import 'package:film_nathalia/screens/favorit_screen.dart';
 import 'package:film_nathalia/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const HomeScreen(),
+      home: const FavoritScreen(),
     );
   }
 }
